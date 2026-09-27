@@ -1,0 +1,33 @@
+#cloud-config
+
+package_update: false
+package_upgrade: false
+
+write_files:
+  - path: /opt/bootstrap/bootstrap.sh
+    permissions: '0755'
+    owner: root:root
+    content: |
+      #!/usr/bin/env bash
+
+      set -euo pipefail
+
+      echo "Cloud-init bootstrap starting..."
+
+      apt-get update
+
+      DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        curl \
+        wget \
+        git \
+        vim \
+        unzip \
+        ufw \
+        htop \
+        tree
+
+      echo "Cloud-init bootstrap completed."
+
+runcmd:
+  - mkdir -p /opt/bootstrap
+  - /opt/bootstrap/bootstrap.sh
