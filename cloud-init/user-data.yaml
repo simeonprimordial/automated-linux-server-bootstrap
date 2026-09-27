@@ -1,33 +1,11 @@
 #cloud-config
 
-package_update: false
-package_upgrade: false
-
-write_files:
-  - path: /opt/bootstrap/bootstrap.sh
-    permissions: '0755'
-    owner: root:root
-    content: |
-      #!/usr/bin/env bash
-
-      set -euo pipefail
-
-      echo "Cloud-init bootstrap starting..."
-
-      apt-get update
-
-      DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        curl \
-        wget \
-        git \
-        vim \
-        unzip \
-        ufw \
-        htop \
-        tree
-
-      echo "Cloud-init bootstrap completed."
+package_update: true
+package_upgrade: true
 
 runcmd:
   - mkdir -p /opt/bootstrap
-  - /opt/bootstrap/bootstrap.sh
+  - git clone https://github.com/simeonprimordial/automated-linux-server-bootstrap.git /opt/bootstrap
+  - chmod +x /opt/bootstrap/scripts/bootstrap.sh
+  - /opt/bootstrap/scripts/bootstrap.sh
+  - /opt/bootstrap/scripts/verify.sh > /var/log/bootstrap-verification.log 2>&1
