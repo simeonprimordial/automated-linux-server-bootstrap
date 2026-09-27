@@ -39,21 +39,28 @@ else
     echo "User $DEVOPS_USER created."
 fi
 
-echo "[5/11] Configuring SSH access..."
+echo "[5/10] Configuring SSH access..."
 
 SSH_DIR="/home/$DEVOPS_USER/.ssh"
 AUTHORIZED_KEYS="$SSH_DIR/authorized_keys"
 
 sudo mkdir -p "$SSH_DIR"
-
 sudo touch "$AUTHORIZED_KEYS"
 
 sudo chown -R "$DEVOPS_USER:$DEVOPS_USER" "$SSH_DIR"
-
 sudo chmod 700 "$SSH_DIR"
 sudo chmod 600 "$AUTHORIZED_KEYS"
 
-echo "SSH directory configured for $DEVOPS_USER."
+if [[ -n "${SSH_PUBLIC_KEY:-}" ]]; then
+    if ! grep -qxF "$SSH_PUBLIC_KEY" "$AUTHORIZED_KEYS"; then
+        echo "$SSH_PUBLIC_KEY" | sudo tee -a "$AUTHORIZED_KEYS" > /dev/null
+        echo "SSH public key added for $DEVOPS_USER."
+    else
+        echo "SSH public key already exists."
+    fi
+else
+    echo "WARNING: SSH_PUBLIC_KEY was not provided."
+fi
 
 echo "[6/11] Creating standard directories..."
 sudo mkdir -p /opt/apps
