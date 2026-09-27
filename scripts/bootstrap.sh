@@ -2,6 +2,15 @@
 
 set -euo pipefail
 
+CONFIG_FILE="$(dirname "$0")/../config/server.conf"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: Configuration file not found: $CONFIG_FILE"
+    exit 1
+fi
+
+source "$CONFIG_FILE"
+
 echo "======================================"
 echo " Automated Linux Server Bootstrap"
 echo "======================================"
@@ -24,8 +33,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
     tree
 
 echo "[4/11] Creating DevOps user..."
-
-DEVOPS_USER="devops"
 
 if id "$DEVOPS_USER" &>/dev/null; then
     echo "User $DEVOPS_USER already exists."
@@ -63,11 +70,11 @@ else
 fi
 
 echo "[6/11] Creating standard directories..."
-sudo mkdir -p /opt/apps
-sudo mkdir -p /var/log/apps
+sudo mkdir -p "$APP_DIR"
+sudo mkdir -p "$LOG_DIR"
 
 echo "[7/11] Applying basic permissions..."
-sudo chown -R "$DEVOPS_USER:$DEVOPS_USER" /opt/apps
+sudo chown -R "$DEVOPS_USER:$DEVOPS_USER" "$APP_DIR"
 
 echo "[8/11] Applying SSH hardening..."
 
@@ -86,9 +93,9 @@ fi
 
 echo "[9/11] Configuring firewall..."
 
-sudo ufw allow OpenSSH
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
+sudo ufw allow "$SSH_PORT"/tcp
+sudo ufw allow "$HTTP_PORT"/tcp
+sudo ufw allow "$HTTPS_PORT"/tcp
 
 sudo ufw --force enable
 
