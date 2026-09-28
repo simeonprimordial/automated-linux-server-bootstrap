@@ -1,7 +1,6 @@
-cat > .gitignore <<'EOF'
 *.log
 .env
 *.pem
 *.key
 .DS_Store
-EOF
+cloud-init/user-data-rendered.yaml
