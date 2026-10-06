@@ -16,5 +16,6 @@ runcmd:
   - mkdir -p /opt/bootstrap
   - git clone https://github.com/simeonprimordial/automated-linux-server-bootstrap.git /opt/bootstrap
   - chmod +x /opt/bootstrap/scripts/bootstrap.sh
+  - chmod +x /opt/bootstrap/scripts/verify.sh
   - /opt/bootstrap/scripts/bootstrap.sh
   - /opt/bootstrap/scripts/verify.sh > /var/log/bootstrap-verification.log 2>&1

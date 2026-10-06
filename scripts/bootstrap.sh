@@ -80,6 +80,8 @@ echo "[8/11] Applying SSH hardening..."
 
 SSHD_CONFIG="/etc/ssh/sshd_config"
 
+sudo mkdir -p /run/sshd
+
 sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' "$SSHD_CONFIG"
 sudo sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/' "$SSHD_CONFIG"
 
